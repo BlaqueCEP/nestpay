@@ -14,7 +14,15 @@ export class AuthService {
   private readonly helper: AuthHelper;
 
   public async register(body: RegisterDto): Promise<User | never> {
-    const { name, email, password }: RegisterDto = body;
+    const {
+      name,
+      email,
+      avatar,
+      gender,
+      status,
+      phone,
+      password,
+    }: RegisterDto = body;
     let user: User = await this.repository.findOne({ where: { email } });
 
     if (user) {
@@ -25,12 +33,16 @@ export class AuthService {
 
     user.name = name;
     user.email = email;
+    user.gender = gender;
+    user.avatar = avatar;
+    user.status = status;
+    user.phone = phone;
     user.password = this.helper.encodePassword(password);
 
     return this.repository.save(user);
   }
 
-  public async login(body: LoginDto): Promise<string | never> {
+  public async login(body: LoginDto): Promise<any | never> {
     const { email, password }: LoginDto = body;
     const user: User = await this.repository.findOne({ where: { email } });
 
@@ -48,7 +60,7 @@ export class AuthService {
 
     this.repository.update(user.id, { lastLoginAt: new Date() });
 
-    return this.helper.generateToken(user);
+    return { user: user, token: this.helper.generateToken(user) };
   }
 
   public async refresh(user: User): Promise<string> {
