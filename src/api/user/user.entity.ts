@@ -14,10 +14,10 @@ export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   public id!: number;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', unique: true, nullable: false })
   public email!: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', unique: true, nullable: false })
   public phone!: string;
 
   @Column({ type: 'varchar' })
@@ -26,7 +26,7 @@ export class User extends BaseEntity {
   @Column({ type: 'varchar' })
   public gender!: string;
 
-  @Column({ type: 'boolean' })
+  @Column({ type: 'boolean', default: false })
   public status!: boolean;
 
   @Exclude()
