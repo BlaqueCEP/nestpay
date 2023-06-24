@@ -4,16 +4,27 @@ import { User } from '@/api/user/user.entity';
 import { Repository } from 'typeorm';
 import { RegisterDto, LoginDto } from './auth.dto';
 import { AuthHelper } from './auth.helper';
+import { Role } from '@/api/role/entities/role.entity';
+import { RoleUser } from '@/api/roleuser/entities/roleuser.entity';
 
 @Injectable()
 export class AuthService {
   @InjectRepository(User)
+  @InjectRepository(Role)
   private readonly repository: Repository<User>;
+  // private readonly roleRepository: Repository<Role>;
 
   @Inject(AuthHelper)
   private readonly helper: AuthHelper;
 
-  public async register(body: RegisterDto): Promise<User | never> {
+  constructor(
+    @InjectRepository(Role)
+    private readonly roleRepository: Repository<Role>,
+    @InjectRepository(RoleUser)
+    private readonly roleuserRepository: Repository<RoleUser>,
+  ) {}
+
+  public async register(body: RegisterDto): Promise<any | never> {
     const {
       name,
       email,
@@ -23,13 +34,19 @@ export class AuthService {
       phone,
       password,
     }: RegisterDto = body;
-    let user: User = await this.repository.findOne({ where: { email } });
+
+    let user: User = await this.repository.findOne({ where: { email: email } });
+    const rl: Role = await this.roleRepository.findOne({
+      where: { name: 'User' },
+    });
 
     if (user) {
-      throw new HttpException('Conflict', HttpStatus.CONFLICT);
+      throw new HttpException('Conflict of duplicates', HttpStatus.CONFLICT);
     }
 
     user = new User();
+
+    console.log(rl.name);
 
     user.name = name;
     user.email = email;
@@ -38,8 +55,17 @@ export class AuthService {
     user.status = status;
     user.phone = phone;
     user.password = this.helper.encodePassword(password);
+    await this.repository.save(user);
 
-    return this.repository.save(user);
+    const roleuser = new RoleUser();
+
+    roleuser.user = user;
+    roleuser.role = rl;
+
+    await this.roleuserRepository.save(roleuser);
+    await this.roleuserRepository.save(roleuser);
+
+    return user;
   }
 
   public async login(body: LoginDto): Promise<any | never> {

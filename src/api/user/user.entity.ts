@@ -5,9 +5,12 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Role } from '../role/entities/role.entity';
+// import { Roleuser } from '/api/src/api/roleuser/entities/roleuser.entity';
+import { RoleUser } from '@/api/roleuser/entities/roleuser.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -39,7 +42,11 @@ export class User extends BaseEntity {
   @Column({ type: 'timestamp', nullable: true, default: null })
   public lastLoginAt: Date | null;
 
-  @ManyToMany(() => Role)
-  @JoinTable()
-  categories: Role[];
+  @OneToMany(() => RoleUser, roleuser => roleuser.user)
+  public roleusers: RoleUser[];
+  // @OneToMany((type) => RoleUser, (roleuser) => roleuser.user, {
+  //   cascade: ['insert', 'update'],
+  // })
+  // roleusers: RoleUser[];
+
 }

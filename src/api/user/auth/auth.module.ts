@@ -8,6 +8,8 @@ import { AuthHelper } from './auth.helper';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './auth.strategy';
 import { ConfigService } from '@nestjs/config';
+import { Role } from '@/api/role/entities/role.entity';
+import {RoleUser} from "@/api/roleuser/entities/roleuser.entity";
 
 @Module({
   imports: [
@@ -19,7 +21,7 @@ import { ConfigService } from '@nestjs/config';
         signOptions: { expiresIn: 3600 },
       }),
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Role, RoleUser]),
   ],
   controllers: [AuthController],
   providers: [AuthService, AuthHelper, JwtStrategy],

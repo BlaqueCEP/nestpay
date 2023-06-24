@@ -8,6 +8,7 @@ import { TypeOrmConfigService } from './shared/typeorm/typeorm.service';
 import { ApiModule } from './api/api.module';
 import { RoleModule } from '@/api/role/role.module';
 import { PermissionModule } from '@/api/permission/permission.module';
+import { RoleUser } from '@/api/roleuser/entities/roleuser.entity';
 // import { RoleModule } from './src/api/role/role.module';
 
 const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
@@ -18,6 +19,7 @@ const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
     TypeOrmModule.forRootAsync({ useClass: TypeOrmConfigService }),
     ApiModule,
     RoleModule,
+    RoleUser,
     PermissionModule,
   ],
   controllers: [AppController],

@@ -1,4 +1,14 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { RoleUser } from '@/api/roleuser/entities/roleuser.entity';
 
 @Entity()
 export class Role extends BaseEntity {
@@ -10,4 +20,11 @@ export class Role extends BaseEntity {
 
   @Column({ type: 'varchar' })
   public description!: string;
+
+  @OneToMany(() => RoleUser, roleuser => roleuser.user)
+  public roleusers: RoleUser[];
+  // @OneToMany((type) => RoleUser, (roleuser) => roleuser.user, {
+  //   cascade: ['insert', 'update'],
+  // })
+  // roleusers: RoleUser[];
 }
