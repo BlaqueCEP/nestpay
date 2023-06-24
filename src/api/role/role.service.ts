@@ -20,7 +20,13 @@ export class RoleService {
   }
 
   findOne(id: number) {
-    return this.repository.findOne(id);
+    return this.repository.findOne(id).then((res) => {
+      if (!res) {
+        return { data: null, message: 'Role not found', status: 404 };
+      } else {
+        return res;
+      }
+    });
   }
 
   update(id: number, updateRoleDto: UpdateRoleDto) {

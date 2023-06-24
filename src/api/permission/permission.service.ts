@@ -22,7 +22,13 @@ export class PermissionService {
   }
 
   findOne(id: number) {
-    return this.repository.findOne(id);
+    return this.repository.findOne(id).then((res) => {
+      if (!res) {
+        return { data: null, message: 'Permission not found', status: 404 };
+      } else {
+        return res;
+      }
+    });
   }
 
   update(id: number, updatePermissionDto: UpdatePermissionDto) {
