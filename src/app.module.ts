@@ -9,7 +9,8 @@ import { ApiModule } from './api/api.module';
 import { RoleModule } from '@/api/role/role.module';
 import { PermissionModule } from '@/api/permission/permission.module';
 import { RoleUser } from '@/api/roleuser/entities/roleuser.entity';
-// import { RoleModule } from './src/api/role/role.module';
+import { Rolepermission } from '@/api/rolepermissions/entities/rolepermission.entity';
+import { Role } from '@/api/role/entities/role.entity';
 
 const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
 
@@ -20,6 +21,8 @@ const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
     ApiModule,
     RoleModule,
     RoleUser,
+    Rolepermission,
+    Role,
     PermissionModule,
   ],
   controllers: [AppController],

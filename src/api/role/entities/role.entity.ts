@@ -9,6 +9,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { RoleUser } from '@/api/roleuser/entities/roleuser.entity';
+import { Rolepermission } from '@/api/rolepermissions/entities/rolepermission.entity';
 
 @Entity()
 export class Role extends BaseEntity {
@@ -23,8 +24,7 @@ export class Role extends BaseEntity {
 
   @OneToMany(() => RoleUser, roleuser => roleuser.user)
   public roleusers: RoleUser[];
-  // @OneToMany((type) => RoleUser, (roleuser) => roleuser.user, {
-  //   cascade: ['insert', 'update'],
-  // })
-  // roleusers: RoleUser[];
+
+  @OneToMany(() => Rolepermission, rolepermission => rolepermission.permission)
+  public rolepermissions: Rolepermission[];
 }

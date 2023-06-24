@@ -7,9 +7,20 @@ import { AuthModule } from './auth/auth.module';
 import { Role } from '@/api/role/entities/role.entity';
 import { RoleService } from '@/api/role/role.service';
 import { RoleUser } from '@/api/roleuser/entities/roleuser.entity';
+import { Rolepermission } from '@/api/rolepermissions/entities/rolepermission.entity';
+import { Permission } from '@/api/permission/entities/permission.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Role, RoleUser]), AuthModule],
+  imports: [
+    TypeOrmModule.forFeature([
+      User,
+      Role,
+      Permission,
+      RoleUser,
+      Rolepermission,
+    ]),
+    AuthModule,
+  ],
   controllers: [UserController],
   providers: [UserService, RoleService],
 })

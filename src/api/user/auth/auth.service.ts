@@ -1,11 +1,13 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@/api/user/user.entity';
-import { Repository } from 'typeorm';
+import { In, Repository, getRepository, Connection } from 'typeorm';
 import { RegisterDto, LoginDto } from './auth.dto';
 import { AuthHelper } from './auth.helper';
 import { Role } from '@/api/role/entities/role.entity';
 import { RoleUser } from '@/api/roleuser/entities/roleuser.entity';
+import { Permission } from '@/api/permission/entities/permission.entity';
+import { Rolepermission } from '@/api/rolepermissions/entities/rolepermission.entity';
 
 @Injectable()
 export class AuthService {
@@ -20,8 +22,13 @@ export class AuthService {
   constructor(
     @InjectRepository(Role)
     private readonly roleRepository: Repository<Role>,
+    @InjectRepository(Permission)
+    private readonly permissionRepository: Repository<Permission>,
+    @InjectRepository(Rolepermission)
+    private readonly rolepermissionRepository: Repository<Rolepermission>,
     @InjectRepository(RoleUser)
     private readonly roleuserRepository: Repository<RoleUser>,
+    private readonly connection: Connection,
   ) {}
 
   public async register(body: RegisterDto): Promise<any | never> {
@@ -35,9 +42,13 @@ export class AuthService {
       password,
     }: RegisterDto = body;
 
+    const self = this;
     let user: User = await this.repository.findOne({ where: { email: email } });
     const rl: Role = await this.roleRepository.findOne({
       where: { name: 'User' },
+    });
+    const perm = this.permissionRepository.find({
+      name: In(['Create', 'Read', 'Update']),
     });
 
     if (user) {
@@ -62,15 +73,52 @@ export class AuthService {
     roleuser.user = user;
     roleuser.role = rl;
 
-    await this.roleuserRepository.save(roleuser);
-    await this.roleuserRepository.save(roleuser);
+    const savedRole = await this.roleuserRepository.save(roleuser);
 
-    return user;
+    async function saveRolePermissions(role: Role, permission: Permission) {
+      const rolePermission = new Rolepermission();
+      // code to be executed
+      rolePermission.role = role;
+      rolePermission.permission = permission;
+      await self.rolepermissionRepository.save(rolePermission);
+    }
+
+    if (savedRole) {
+      perm.then(async (res) => {
+        for (const pe of res) {
+          await saveRolePermissions(rl, pe);
+        }
+      });
+    }
+    return await this.repository.findOne({
+      where: { email: user.email },
+      relations: [
+        'roleusers',
+        'roleusers.role',
+        'roleusers.role.rolepermissions',
+        'roleusers.role.rolepermissions.permission',
+      ],
+    });
   }
 
   public async login(body: LoginDto): Promise<any | never> {
     const { email, password }: LoginDto = body;
-    const user: User = await this.repository.findOne({ where: { email } });
+    const user: User = await this.repository.findOne({
+      where: { email },
+      relations: [
+        'roleusers',
+        'roleusers.role',
+        // 'roleusers.role.rolepermissions',
+        // 'rolepermissions.permission',
+        //   'roleusers.role.rolepermissions',
+        //   'roleusers.role.rolepermissions.permission',
+      ],
+    });
+
+    // const user = await getRepository(User)
+    //   .createQueryBuilder('user')
+    //   .leftJoinAndSelect('user.roleusers  ', 'role')
+    //   .getOne();
 
     if (!user) {
       throw new HttpException('No user found', HttpStatus.NOT_FOUND);

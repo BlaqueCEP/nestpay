@@ -3,8 +3,6 @@ import {
   BaseEntity,
   Column,
   Entity,
-  JoinTable,
-  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -44,9 +42,4 @@ export class User extends BaseEntity {
 
   @OneToMany(() => RoleUser, roleuser => roleuser.user)
   public roleusers: RoleUser[];
-  // @OneToMany((type) => RoleUser, (roleuser) => roleuser.user, {
-  //   cascade: ['insert', 'update'],
-  // })
-  // roleusers: RoleUser[];
-
 }

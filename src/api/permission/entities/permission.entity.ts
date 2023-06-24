@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { RoleUser } from '@/api/roleuser/entities/roleuser.entity';
+import { Rolepermission } from '@/api/rolepermissions/entities/rolepermission.entity';
 
 @Entity()
 export class Permission {
@@ -10,4 +12,7 @@ export class Permission {
 
   @Column({ type: 'varchar' })
   public description!: string;
+
+  @OneToMany(() => Rolepermission, (rolepermission) => rolepermission.role)
+  public rolepermissions: Rolepermission[];
 }
