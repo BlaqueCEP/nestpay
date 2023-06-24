@@ -1,5 +1,13 @@
 import { Exclude } from 'class-transformer';
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Role } from '../role/entities/role.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -30,4 +38,8 @@ export class User extends BaseEntity {
 
   @Column({ type: 'timestamp', nullable: true, default: null })
   public lastLoginAt: Date | null;
+
+  @ManyToMany(() => Role)
+  @JoinTable()
+  categories: Role[];
 }

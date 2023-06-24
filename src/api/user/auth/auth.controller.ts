@@ -7,6 +7,7 @@ import {
   UseInterceptors,
   UseGuards,
   Req,
+  Scope,
 } from '@nestjs/common';
 import { User } from '@/api/user/user.entity';
 import { RegisterDto, LoginDto } from './auth.dto';
@@ -14,7 +15,10 @@ import { JwtAuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 import { Request } from 'express';
 
-@Controller('auth')
+@Controller({
+  path: 'auth',
+  scope: Scope.REQUEST,
+})
 export class AuthController {
   @Inject(AuthService)
   private readonly service: AuthService;
