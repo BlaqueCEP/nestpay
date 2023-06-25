@@ -30,9 +30,6 @@ export class RoleService {
       relations: ['rolepermissions'],
     });
 
-
-
-
     // return await createQueryBuilder('role')
     //   .leftJoinAndSelect(
     //     Rolepermission,

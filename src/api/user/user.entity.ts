@@ -6,8 +6,6 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Role } from '../role/entities/role.entity';
-// import { Roleuser } from '/api/src/api/roleuser/entities/roleuser.entity';
 import { RoleUser } from '@/api/roleuser/entities/roleuser.entity';
 
 @Entity()

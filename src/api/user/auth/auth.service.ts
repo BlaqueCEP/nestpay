@@ -42,6 +42,7 @@ export class AuthService {
       password,
     }: RegisterDto = body;
 
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
     let user: User = await this.repository.findOne({ where: { email: email } });
     const rl: Role = await this.roleRepository.findOne({
@@ -105,14 +106,7 @@ export class AuthService {
     const { email, password }: LoginDto = body;
     const user: User = await this.repository.findOne({
       where: { email },
-      relations: [
-        'roleusers',
-        'roleusers.role',
-        // 'roleusers.role.rolepermissions',
-        // 'rolepermissions.permission',
-        //   'roleusers.role.rolepermissions',
-        //   'roleusers.role.rolepermissions.permission',
-      ],
+      relations: ['roleusers.rolepermissions', 'roleusers.role'],
     });
 
     // const user = await getRepository(User)
