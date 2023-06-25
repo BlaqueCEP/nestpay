@@ -12,10 +12,14 @@ export class Rolepermission {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne((type) => Role, (role) => role.roleusers)
+  @ManyToOne((type) => Role, (role) => role.roleusers, {
+    eager: true,
+  })
   role: Role;
 
-  @ManyToOne((type) => Permission, (permission) => permission.rolepermissions)
+  @ManyToOne((type) => Permission, (permission) => permission.rolepermissions, {
+    eager: true,
+  })
   permission: Permission;
 
   @CreateDateColumn({ type: 'timestamp' })

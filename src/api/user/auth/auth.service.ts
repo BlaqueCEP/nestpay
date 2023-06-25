@@ -104,15 +104,25 @@ export class AuthService {
 
   public async login(body: LoginDto): Promise<any | never> {
     const { email, password }: LoginDto = body;
-    const user: User = await this.repository.findOne({
-      where: { email },
-      relations: ['roleusers.rolepermissions', 'roleusers.role'],
-    });
 
-    // const user = await getRepository(User)
-    //   .createQueryBuilder('user')
-    //   .leftJoinAndSelect('user.roleusers  ', 'role')
-    //   .getOne();
+    // const user: User = await this.repository.findOne({
+    //   where: { email },
+    //   relations: [
+    //     'roleusers',
+    //     'roleusers.role',
+    //     'roleusers.role.rolepermissions',
+    //     'roleusers.role.rolepermissions.permission',
+    //   ],
+    // });
+
+    const user = await getRepository(User)
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.roleusers', 'roleusers')
+      .leftJoinAndSelect('roleusers.role', 'role')
+      .leftJoinAndSelect('role.rolepermissions', 'rolepermissions')
+      .leftJoin('rolepermissions.permission', 'permission')
+      .getOne();
+
 
     if (!user) {
       throw new HttpException('No user found', HttpStatus.NOT_FOUND);

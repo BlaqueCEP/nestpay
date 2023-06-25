@@ -38,6 +38,6 @@ export class User extends BaseEntity {
   @Column({ type: 'timestamp', nullable: true, default: null })
   public lastLoginAt: Date | null;
 
-  @OneToMany(() => RoleUser, roleuser => roleuser.user)
+  @OneToMany(() => RoleUser, (roleuser) => roleuser.user)
   public roleusers: RoleUser[];
 }

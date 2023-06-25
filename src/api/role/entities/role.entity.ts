@@ -22,9 +22,13 @@ export class Role extends BaseEntity {
   @Column({ type: 'varchar' })
   public description!: string;
 
-  @OneToMany(() => RoleUser, roleuser => roleuser.user)
+  @OneToMany(() => RoleUser, (roleuser) => roleuser.user)
   public roleusers: RoleUser[];
 
-  @OneToMany(() => Rolepermission, rolepermission => rolepermission.permission)
+  @OneToMany(
+    () => Rolepermission,
+    (rolepermission) => rolepermission.permission,
+  )
+  @JoinTable()
   public rolepermissions: Rolepermission[];
 }
